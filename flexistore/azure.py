@@ -6,7 +6,13 @@ from typing import List
 from .manager import StorageManager
 
 class AzureStorageManager(StorageManager):
-    def __init__(self, conn_str: str, container: str, verify_ssl: bool = True):
+    def __init__(
+            self, 
+            conn_str: str, 
+            container: str, 
+            *,
+            verify_ssl: bool = False
+        ):
         if not BlobServiceClient:
             raise ImportError("azure-storage-blob is required")
         try:

@@ -10,11 +10,28 @@ load_dotenv()
 
 def parse_args():
     parser = argparse.ArgumentParser(description="FlexiStore interactive CLI")
+
     parser.add_argument(
         "--provider",
         choices=["azure", "aws"],
         help="Storage provider to use (default: value of FLEXISTORE_PROVIDER or azure)",
     )
+
+    ssl_group = parser.add_mutually_exclusive_group()
+    ssl_group.add_argument(
+        "--no-verify-ssl",
+        action="store_false",
+        dest="verify_ssl",
+        help="Disable SSL certificate verification for AWS (default: enabled)",
+    )
+    ssl_group.add_argument(
+        "--verify-ssl",
+        action="store_true",
+        dest="verify_ssl",
+        help="Enable SSL certificate verification for AWS (default)",
+    )
+    parser.set_defaults(verify_ssl=False)
+    
     return parser.parse_args()
 
 def print_menu():
@@ -50,11 +67,12 @@ def main():
                 region=region,
                 aws_access_key_id=access_key,
                 aws_secret_access_key=secret_key,
+                verify_ssl=args.verify_ssl,
             )
         except (BotoCoreError, ClientError) as e:
             print(f"[Fatal] Unable to initialize AWSStorageManager: {e}")
             return
-    else:
+    elif provider == "azure":
         conn_str = get_env_or_prompt("AZURE_CONN_STRING", "Azure connection string")
         container = get_env_or_prompt("AZURE_CONTAINER", "Container name")
 
@@ -63,6 +81,10 @@ def main():
         except AzureError as e:
             print(f"[Fatal] Unable to initialize AzureStorageManager: {e}")
             return
+        
+    else:
+        print(f"[Fatal] Unknown provider '{provider}'. Please specify either 'azure' or 'aws'.")
+        return
 
     while True:
         print_menu()

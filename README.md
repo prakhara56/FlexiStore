@@ -88,7 +88,7 @@ Concrete implementation using Azure Blob Storage with built-in error handling.
 
 ### `AWSStorageManager`
 
-Implementation using AWS S3 with boto3.
+Implementation using AWS S3 with boto3. `verify_ssl` (bool) controls TLS certificate verification when connecting.
 
 ## CLI Reference
 

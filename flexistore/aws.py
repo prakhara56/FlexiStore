@@ -6,19 +6,26 @@ from botocore.exceptions import BotoCoreError, ClientError
 from .manager import StorageManager
 
 class AWSStorageManager(StorageManager):
-    def __init__(self, bucket: str, region: str = None, aws_access_key_id: str = None,
-                 aws_secret_access_key: str = None):
+    def __init__(
+        self,
+        bucket: str,
+        region: str,
+        aws_access_key_id: str,
+        aws_secret_access_key: str,
+        *,
+        verify_ssl: bool = False
+    ):
         try:
             session = boto3.session.Session(
                 aws_access_key_id=aws_access_key_id or None,
                 aws_secret_access_key=aws_secret_access_key or None,
                 region_name=region or None,
             )
-            self.s3 = session.resource("s3")
+            self.s3 = session.resource("s3", verify=verify_ssl)
             self.bucket = self.s3.Bucket(bucket)
             # Verify bucket exists
             self.s3.meta.client.head_bucket(Bucket=bucket)
-            print(f"Connected to AWS bucket '{bucket}' successfully.")
+            print(f"Connected to AWS bucket '{bucket}' successfully. \nVerify_ssl={verify_ssl}")
         except (BotoCoreError, ClientError) as e:
             print(f"Failed to connect to AWS S3: {e}")
             raise
