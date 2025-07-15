@@ -53,6 +53,18 @@ flexistore --provider azure
 flexistore --provider aws
 ```
 
+#### AWS backend variables
+
+When using the AWS provider, the CLI looks for the following environment
+variables:
+
+- `AWS_BUCKET`
+- `AWS_REGION`
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+
+These can be defined in a `.env` file or exported directly in your shell.
+
 Follow the interactive prompts to upload, list, download, or delete objects.
 
 ## API Reference
