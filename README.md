@@ -32,7 +32,11 @@ git+https://github.com/prakhara56/FlexiStore.git@main#egg=flexistore
 from flexistore.azure import AzureStorageManager
 
 # Initialize with your connection string and container
-mgr = AzureStorageManager(conn_str="<AZURE_CONN_STRING>", container="my-container")
+mgr = AzureStorageManager(
+    conn_str="<AZURE_CONN_STRING>",
+    container="my-container",
+    verify_ssl=True,  # set to False to skip TLS verification
+)
 
 # Upload a local file
 mgr.upload_file("./data/report.csv", "backups/report.csv")
@@ -68,6 +72,7 @@ Follow the interactive prompts to upload, list, download, or delete objects.
 ### `AzureStorageManager`
 
 Concrete implementation using Azure Blob Storage with built-in error handling.
+`verify_ssl` (bool) controls TLS certificate verification when connecting.
 
 ### `AWSStorageManager`
 
