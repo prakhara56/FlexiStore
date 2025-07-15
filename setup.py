@@ -4,7 +4,8 @@ setup(
     name="flexistore",
     version="0.1.0",
     description="Cloud-agnostic storage interface and Azure Blob implementation with CLI",
-    author="Your Name",
+    author="Prakhar Agarwal",
+    author_email="prakhara56@gmail.com"
     packages=find_packages(where=".", include=["flexistore", "flexistore.*"]),
     install_requires=[
         "azure-storage-blob>=12.0.0",
