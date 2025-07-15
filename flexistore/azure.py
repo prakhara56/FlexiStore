@@ -6,13 +6,13 @@ from typing import List
 from .manager import StorageManager
 
 class AzureStorageManager(StorageManager):
-    def __init__(self, conn_str: str, container: str):
+    def __init__(self, conn_str: str, container: str, verify_ssl: bool = True):
         if not BlobServiceClient:
             raise ImportError("azure-storage-blob is required")
         try:
             client = BlobServiceClient.from_connection_string(
                 conn_str,
-                transport=RequestsTransport(connection_verify=False)
+                transport=RequestsTransport(connection_verify=verify_ssl)
             )
             self.container: ContainerClient = client.get_container_client(container)
             print(f"Connected to Azure container '{container}' successfully.")
