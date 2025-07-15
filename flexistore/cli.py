@@ -41,9 +41,9 @@ def main():
 
     if provider == "aws":
         bucket = get_env_or_prompt("AWS_BUCKET", "S3 bucket name")
-        region = os.getenv("AWS_REGION", "")
-        access_key = os.getenv("AWS_ACCESS_KEY_ID", "")
-        secret_key = os.getenv("AWS_SECRET_ACCESS_KEY", "")
+        region = get_env_or_prompt("AWS_REGION", "AWS region")
+        access_key = get_env_or_prompt("AWS_ACCESS_KEY_ID", "AWS access key ID")
+        secret_key = get_env_or_prompt("AWS_SECRET_ACCESS_KEY", "AWS secret access key")
         try:
             mgr = AWSStorageManager(
                 bucket=bucket,
