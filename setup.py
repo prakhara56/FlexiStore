@@ -8,12 +8,14 @@ setup(
     packages=find_packages(where=".", include=["flexistore", "flexistore.*"]),
     install_requires=[
         "azure-storage-blob>=12.0.0",
-        "python-dotenv>=0.15.0"
+        "boto3>=1.17.0",
+        "python-dotenv>=0.15.0",
     ],
     python_requires=">=3.7",
     entry_points={
         'console_scripts': [
-            'flexistore-cli = flexistore.cli:main'
+            'flexistore = flexistore.cli:main',
+            'flexistore-cli = flexistore.cli:main',
         ]
     }
 )

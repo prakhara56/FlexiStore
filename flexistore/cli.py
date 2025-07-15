@@ -1,9 +1,21 @@
+import argparse
 import os
 from dotenv import load_dotenv
 from azure.core.exceptions import AzureError
+from botocore.exceptions import BotoCoreError, ClientError
 from .azure import AzureStorageManager
+from .aws import AWSStorageManager
 
 load_dotenv()
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="FlexiStore interactive CLI")
+    parser.add_argument(
+        "--provider",
+        choices=["azure", "aws"],
+        help="Storage provider to use (default: value of FLEXISTORE_PROVIDER or azure)",
+    )
+    return parser.parse_args()
 
 def print_menu():
     print("\n=== FlexiStore CLI ===")
@@ -24,14 +36,33 @@ def get_env_or_prompt(env_var: str, prompt_text: str) -> str:
     return val
 
 def main():
-    conn_str = get_env_or_prompt("AZURE_CONN_STRING", "Azure connection string")
-    container = get_env_or_prompt("AZURE_CONTAINER", "Container name")
+    args = parse_args()
+    provider = args.provider or os.getenv("FLEXISTORE_PROVIDER", "azure").lower()
 
-    try:
-        mgr = AzureStorageManager(conn_str=conn_str, container=container)
-    except AzureError as e:
-        print(f"[Fatal] Unable to initialize AzureStorageManager: {e}")
-        return
+    if provider == "aws":
+        bucket = get_env_or_prompt("AWS_BUCKET", "S3 bucket name")
+        region = os.getenv("AWS_REGION", "")
+        access_key = os.getenv("AWS_ACCESS_KEY_ID", "")
+        secret_key = os.getenv("AWS_SECRET_ACCESS_KEY", "")
+        try:
+            mgr = AWSStorageManager(
+                bucket=bucket,
+                region=region,
+                aws_access_key_id=access_key,
+                aws_secret_access_key=secret_key,
+            )
+        except (BotoCoreError, ClientError) as e:
+            print(f"[Fatal] Unable to initialize AWSStorageManager: {e}")
+            return
+    else:
+        conn_str = get_env_or_prompt("AZURE_CONN_STRING", "Azure connection string")
+        container = get_env_or_prompt("AZURE_CONTAINER", "Container name")
+
+        try:
+            mgr = AzureStorageManager(conn_str=conn_str, container=container)
+        except AzureError as e:
+            print(f"[Fatal] Unable to initialize AzureStorageManager: {e}")
+            return
 
     while True:
         print_menu()

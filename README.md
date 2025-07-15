@@ -36,16 +36,24 @@ mgr = AzureStorageManager(conn_str="<AZURE_CONN_STRING>", container="my-containe
 
 # Upload a local file
 mgr.upload_file("./data/report.csv", "backups/report.csv")
+
+# Using AWS S3
+from flexistore.aws import AWSStorageManager
+s3_mgr = AWSStorageManager(bucket="my-bucket")
 ```
 
 ### As a CLI
 
 ```bash
-# Ensure env vars or .env contain AZURE_CONN_STRING and AZURE_CONTAINER
-flexistore-cli
+# Ensure env vars or a .env file contain your credentials
+# Azure example
+flexistore --provider azure
+
+# AWS example
+flexistore --provider aws
 ```
 
-Follow the interactive prompts to upload, list, download, or delete blobs.
+Follow the interactive prompts to upload, list, download, or delete objects.
 
 ## API Reference
 
@@ -61,9 +69,13 @@ Follow the interactive prompts to upload, list, download, or delete blobs.
 
 Concrete implementation using Azure Blob Storage with built-in error handling.
 
+### `AWSStorageManager`
+
+Implementation using AWS S3 with boto3.
+
 ## CLI Reference
 
-The `flexistore-cli` entry point runs the interactive CLI defined in `cli.py`.
+The `flexistore` command runs the interactive CLI defined in `cli.py`.
 
 ## Extending for Other Providers
 
